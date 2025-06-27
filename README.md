@@ -1,6 +1,6 @@
 # 🧠 Real-Time Memory Interaction and Visualization
 
-MemLog implements a simulated memory management system backed by an SQLite database. It allows users to store and retrieve "memories" (text entries for now), while visualizing in real-time the memory retention, access frequency, and age distribution using `matplotlib`.
+NeuroSim implements a simulated memory management system backed by an SQLite database. It allows users to store and retrieve "memories" (text entries for now), while visualizing in real-time the memory retention, access frequency, and age distribution using `matplotlib`.
 
 ## 🚀 Features
 
@@ -22,8 +22,8 @@ MemLog implements a simulated memory management system backed by an SQLite datab
 ### 1. Clone or Download the Project
 
 ```bash
-git clone https://github.com/sp-mujuni/MemLog.git
-cd MemLog
+git clone https://github.com/sp-mujuni/NeuroSim.git
+cd NeuroSim
 ````
 
 ### 2. Create and Activate a Virtual Environment
