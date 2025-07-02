@@ -1,5 +1,3 @@
-# main.py
-
 from engine.memory_engine import MemoryEngine
 from ehr.fhir_adapter import FHIRAdapter
 from engine.similarity import SimilarityScorer
