@@ -40,7 +40,7 @@ neurosim/
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/your-org/neurosim-cds.git
+git clone https://github.com/sp-mujuni/neurosim-cds.git
 cd neurosim-cds
 ```
 
