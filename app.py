@@ -27,12 +27,18 @@ def add_patient():
     condition = data.get("condition")
     notes = data.get("notes")
     prescription = data.get("prescription")
-    consultation_fee = data.get("fee")
+    consultation_fee = data.get("consultation_fee")
+    book_balance_final = 0.0
     try:
-        consultation_fee_value = float(consultation_fee) if consultation_fee else 0.0
+        consultation_fee_value = float(consultation_fee.replace(',', '')) if consultation_fee else 0.0
     except ValueError:
         consultation_fee_value = 0.0
-    book_balance_final = round(consultation_fee_value + consultation_fee_value, 0)
+    # Retrieve the most recent (newest) total balance for this book_id, if any
+    previous_balance = memory_engine.get_latest_book_balance(book_id)
+    book_balance_final = round(consultation_fee_value + (previous_balance or 0.0), 0)
+    # Format values with commas for display
+    consultation_fee_value_formatted = "{:,.0f}".format(consultation_fee_value)
+    book_balance_final_formatted = "{:,.0f}".format(book_balance_final)
 
     if not book_id or not name:
         return "Missing book number or name", 400
@@ -46,8 +52,8 @@ def add_patient():
         "book_id": book_id,
         "name": name,
         "condition": condition,
-        "book_balance_final": book_balance_final,
-        "content": f"Notes: {notes}\nPrescription: {prescription}\nConsultation Fee: {consultation_fee}\nDate Added: {record_date}",
+        "book_balance": book_balance_final,
+        "content": f"Notes: {notes}\nPrescription: {prescription}\nConsultation Fee: UGX {consultation_fee_value_formatted}\nDate Added: {record_date}\nBook Balance: UGX {book_balance_final_formatted}",
         "strength": 1.0,
         "context_tags": [condition.lower() if condition else "general"]
     }
