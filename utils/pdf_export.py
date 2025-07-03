@@ -19,9 +19,7 @@ class PDFReport(FPDF):
         self.cell(0, 8, f"Name: {memory['name']}", ln=True)
         self.cell(0, 8, f"Condition: {memory['condition']}", ln=True)
         self.multi_cell(0, 8, f"Notes: {memory['content']}")
-        self.cell(0, 8, f"Strength: {memory['strength']:.2f}", ln=True)
-        timestamp = datetime.fromtimestamp(memory['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
-        self.cell(0, 8, f"Recorded: {timestamp}", ln=True)
+        # self.cell(0, 8, f"Strength: {memory['strength']:.2f}", ln=True)
         self.ln(5)
 
 def export_memories_to_pdf(memories):
