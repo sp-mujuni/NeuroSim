@@ -5,7 +5,7 @@ from datetime import datetime
 class PDFReport(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 12)
-        self.cell(0, 10, 'NeuroSim Patient Records', ln=True, align='C')
+        self.cell(0, 10, 'Namulundu Patient Records', ln=True, align='C')
         self.ln(10)
 
     def footer(self):
