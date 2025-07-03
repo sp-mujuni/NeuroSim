@@ -1,25 +1,42 @@
 # app.py
 
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file, session
 from engine.memory_engine import MemoryEngine
 from engine.similarity import SimilarityScorer
 from engine.reinforcement import ReinforcementEngine
+from utils.export_utils import export_memories_to_csv
+from utils.pdf_export import export_memories_to_pdf
+from auth import auth_bp
 import uuid
 import time
 from datetime import datetime
 import os
 
 app = Flask(__name__)
+app.secret_key = "your-secret-key"  # Replace with a secure key in production
+
+app.register_blueprint(auth_bp)
 
 memory_engine = MemoryEngine()
 similarity_scorer = SimilarityScorer()
 reinforcement_engine = ReinforcementEngine()
 
+# Decorator to require login
+def login_required(view_func):
+    def wrapped_view(*args, **kwargs):
+        if "user" not in session:
+            return redirect(url_for("auth.login"))
+        return view_func(*args, **kwargs)
+    wrapped_view.__name__ = view_func.__name__
+    return wrapped_view
+
 @app.route("/")
+@login_required
 def index():
     return render_template("index.html")
 
 @app.route("/add", methods=["POST"])
+@login_required
 def add_patient():
     data = request.form
     book_id = data.get("book_id")
@@ -62,6 +79,7 @@ def add_patient():
     return redirect(url_for("index"))
 
 @app.route("/search", methods=["GET"])
+@login_required
 def search():
     query = request.args.get("query", "")
     query_str = str(query).lower()
