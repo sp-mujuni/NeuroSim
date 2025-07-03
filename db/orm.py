@@ -11,8 +11,10 @@ def init_db():
             CREATE TABLE IF NOT EXISTS memory (
                 id TEXT PRIMARY KEY,
                 timestamp REAL,
+                book_id TEXT,
+                name TEXT,
+                condition TEXT,
                 content TEXT,
-                type TEXT,
                 strength REAL,
                 context_tags TEXT
             )
@@ -25,13 +27,15 @@ def save_memory_entry(memory):
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute('''
-            INSERT OR REPLACE INTO memory (id, timestamp, content, type, strength, context_tags)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO memory (id, timestamp, book_id, name, condition, content, strength, context_tags)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             memory["id"],
             memory["timestamp"],
+            memory["book_id"],
+            memory["name"],
+            memory["condition"],
             memory["content"],
-            memory["type"],
             memory["strength"],
             ",".join(memory.get("context_tags", []))
         ))
@@ -46,10 +50,55 @@ def load_all_memories():
             {
                 "id": row[0],
                 "timestamp": row[1],
-                "content": row[2],
-                "type": row[3],
-                "strength": row[4],
-                "context_tags": row[5].split(",")
+                "book_id": row[2],
+                "name": row[3],
+                "condition": row[4],
+                "content": row[5],
+                "strength": row[6],
+                "context_tags": row[7].split(",")
             }
             for row in rows
         ]
+
+def update_memory_entry(memory):
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            UPDATE memory SET
+                timestamp = ?,
+                book_id = ?,
+                name = ?,
+                condition = ?,
+                content = ?,
+                strength = ?,
+                context_tags = ?
+            WHERE id = ?
+        ''', (
+            memory["timestamp"],
+            memory["book_id"],
+            memory["name"],
+            memory["condition"],
+            memory["content"],
+            memory["strength"],
+            ",".join(memory.get("context_tags", [])),
+            memory["id"]
+        ))
+        conn.commit()
+
+def get_memory_by_id(memory_id):
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM memory WHERE id = ?", (memory_id,))
+        row = cursor.fetchone()
+        if row:
+            return {
+                "id": row[0],
+                "timestamp": row[1],
+                "book_id": row[2],
+                "name": row[3],
+                "condition": row[4],
+                "content": row[5],
+                "strength": row[6],
+                "context_tags": row[7].split(",")
+            }
+        return None
