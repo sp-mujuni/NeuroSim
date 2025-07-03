@@ -12,7 +12,7 @@ class SimilarityScorer:
 
         docs = [query] + corpus
         tfidf_matrix = self.vectorizer.fit_transform(docs)
-        cosine_scores = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
+        cosine_scores = cosine_similarity(tfidf_matrix.getrow(0), tfidf_matrix.getrow(1)).flatten()
 
         scored_memories = [
             {"id": mem["id"], "score": score, "content": mem["content"]}
