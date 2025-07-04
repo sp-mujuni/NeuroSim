@@ -60,7 +60,7 @@ def add_patient():
 
     timestamp = time.time()
     record_date = datetime.fromtimestamp(timestamp)
-    # formatted_date = record_date.strftime('%Y-%m-%d %H:%M:%S')
+    formatted_date = record_date.strftime('%Y-%m-%d %H:%M:%S')
 
 
     memory = {
@@ -70,7 +70,7 @@ def add_patient():
         "name": name,
         "condition": condition,
         "book_balance": book_balance_final,
-        "content": f"Notes: {notes}\nPrescription: {prescription}\nConsultation Fee: UGX {consultation_fee_value_formatted}\nDate Added: {record_date}\nLatest Book Bill: UGX {book_balance_final_formatted}",
+        "content": f"Notes: {notes}\nPrescription: {prescription}\nConsultation Fee: UGX {consultation_fee_value_formatted}\nDate Added: {formatted_date}\nLatest Book Bill: UGX {book_balance_final_formatted}",
     }
 
     memory_engine.save_memory(memory)
