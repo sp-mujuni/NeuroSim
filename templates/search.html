@@ -23,7 +23,7 @@
         <!-- Search Form -->
         <form method="get" action="/search" class="mb-4">
             <div class="input-group">
-                <input type="text" name="query" class="form-control" placeholder="Search patients by name or book number" value="{{ query|default('') }}" required>
+                <input type="text" name="query" class="form-control" placeholder="Search for patients, books and bills" value="{{ query|default('') }}" required>
                 <button class="btn btn-primary" type="submit">Search</button>
             </div>
         </form>
