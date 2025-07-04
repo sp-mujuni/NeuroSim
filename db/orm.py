@@ -18,7 +18,6 @@ class MemoryRecord(Base):
     name = Column(String)
     condition = Column(String)
     content = Column(Text)
-    strength = Column(Float)
     book_balance = Column(Float, default=0.0)
     timestamp = Column(DateTime, default=datetime.utcnow)
 
@@ -50,7 +49,6 @@ def save_memory_entry(memory):
             name=memory["name"],
             condition=memory["condition"],
             content=memory["content"],
-            strength=memory["strength"],
             book_balance=memory.get("book_balance", 0.0)
         )
         db.merge(record)
@@ -67,7 +65,6 @@ def load_all_memories():
                 "name": r.name,
                 "condition": r.condition,
                 "content": r.content,
-                "strength": r.strength,
                 "book_balance": r.book_balance
             }
             for r in records
@@ -82,7 +79,6 @@ def update_memory_entry(memory):
             record.name = memory["name"]
             record.condition = memory["condition"]
             record.content = memory["content"]
-            record.strength = memory["strength"]
             record.book_balance = memory.get("book_balance", 0.0)
             db.commit()
 
@@ -97,7 +93,6 @@ def get_memory_by_id(memory_id):
                 "name": record.name,
                 "condition": record.condition,
                 "content": record.content,
-                "strength": record.strength,
                 "book_balance": record.book_balance
             }
         return None
