@@ -2,3 +2,4 @@ flask==2.3.3
 gunicorn
 scikit-learn
 sqlalchemy==1.4.47
+psycopg2
