@@ -65,7 +65,7 @@ def add_patient():
 
     memory = {
         "id": str(uuid.uuid4()),
-        "timestamp": timestamp,
+        "timestamp": record_date,
         "book_id": book_id,
         "name": name,
         "condition": condition,
