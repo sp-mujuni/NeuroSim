@@ -50,7 +50,7 @@ def add_patient():
         consultation_fee_value = 0.0
     # Retrieve the most recent (newest) total balance for this book_id, if any
     previous_balance = memory_engine.get_latest_book_balance(book_id)
-    book_balance_final = (consultation_fee_value + (previous_balance or 0.0), 0)
+    book_balance_final = consultation_fee_value + (previous_balance or 0.0)
     # Format values with commas for display
     consultation_fee_value_formatted = "{:,.0f}".format(consultation_fee_value)
     book_balance_final_formatted = "{:,.0f}".format(book_balance_final)
