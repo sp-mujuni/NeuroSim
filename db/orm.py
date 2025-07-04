@@ -1,128 +1,115 @@
-import sqlite3
+# orm.py
+import os
+from datetime import datetime
+from sqlalchemy import (
+    create_engine, Column, String, Text, Float, DateTime
+)
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
-DB_PATH = "neurosim_memory.db"
+# Use DATABASE_URL from environment for PostgreSQL fallback
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///namulundu.db")
 
-# Ensure database and table setup, including book_balance column
-def init_db():
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        # Create table if it doesn't exist (with book_balance column)
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS memory (
-                id TEXT PRIMARY KEY,
-                timestamp REAL,
-                book_id TEXT,
-                name TEXT,
-                condition TEXT,
-                content TEXT,
-                strength REAL,
-                context_tags TEXT,
-                book_balance REAL
-            )
-        ''')
-        # Add book_balance column if it doesn't exist
-        cursor.execute("PRAGMA table_info(memory)")
-        columns = [col[1] for col in cursor.fetchall()]
-        if "book_balance" not in columns:
-            cursor.execute("ALTER TABLE memory ADD COLUMN book_balance REAL")
-        conn.commit()
+Base = declarative_base()
 
-init_db()
+class MemoryRecord(Base):
+    __tablename__ = 'memories'
+    id = Column(String, primary_key=True)
+    book_id = Column(String)
+    name = Column(String)
+    condition = Column(String)
+    content = Column(Text)
+    strength = Column(Float)
+    book_balance = Column(Float, default=0.0)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+# Create the database engine
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+)
+
+# Create the table(s)
+Base.metadata.create_all(engine)
+
+# Session factory
+SessionLocal = sessionmaker(bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 def save_memory_entry(memory):
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT OR REPLACE INTO memory (
-                id, timestamp, book_id, name, condition, content, strength, context_tags, book_balance
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            memory["id"],
-            memory["timestamp"],
-            memory["book_id"],
-            memory["name"],
-            memory["condition"],
-            memory["content"],
-            memory["strength"],
-            ",".join(memory.get("context_tags", [])),
-            memory.get("book_balance")
-        ))
-        conn.commit()
+    with SessionLocal() as db:
+        record = MemoryRecord(
+            id=memory["id"],
+            timestamp=memory["timestamp"],
+            book_id=memory["book_id"],
+            name=memory["name"],
+            condition=memory["condition"],
+            content=memory["content"],
+            strength=memory["strength"],
+            book_balance=memory.get("book_balance", 0.0)
+        )
+        db.merge(record)
+        db.commit()
 
 def load_all_memories():
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-            SELECT id, timestamp, book_id, name, condition, content, strength, context_tags, book_balance
-            FROM memory
-        ''')
-        rows = cursor.fetchall()
+    with SessionLocal() as db:
+        records = db.query(MemoryRecord).all()
         return [
             {
-                "id": row[0],
-                "timestamp": row[1],
-                "book_id": row[2],
-                "name": row[3],
-                "condition": row[4],
-                "content": row[5],
-                "strength": row[6],
-                "context_tags": row[7].split(",") if row[7] else [],
-                "book_balance": row[8]
+                "id": r.id,
+                "timestamp": r.timestamp,
+                "book_id": r.book_id,
+                "name": r.name,
+                "condition": r.condition,
+                "content": r.content,
+                "strength": r.strength,
+                "book_balance": r.book_balance
             }
-            for row in rows
+            for r in records
         ]
 
 def update_memory_entry(memory):
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-            UPDATE memory SET
-                timestamp = ?,
-                book_id = ?,
-                name = ?,
-                condition = ?,
-                content = ?,
-                strength = ?,
-                context_tags = ?,
-                book_balance = ?
-            WHERE id = ?
-        ''', (
-            memory["timestamp"],
-            memory["book_id"],
-            memory["name"],
-            memory["condition"],
-            memory["content"],
-            memory["strength"],
-            ",".join(memory.get("context_tags", [])),
-            memory.get("book_balance"),
-            memory["id"]
-        ))
-        conn.commit()
+    with SessionLocal() as db:
+        record = db.query(MemoryRecord).filter(MemoryRecord.id == memory["id"]).first()
+        if record:
+            record.timestamp = memory["timestamp"]
+            record.book_id = memory["book_id"]
+            record.name = memory["name"]
+            record.condition = memory["condition"]
+            record.content = memory["content"]
+            record.strength = memory["strength"]
+            record.book_balance = memory.get("book_balance", 0.0)
+            db.commit()
 
 def get_memory_by_id(memory_id):
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM memory WHERE id = ?", (memory_id,))
-        row = cursor.fetchone()
-        if row:
+    with SessionLocal() as db:
+        record = db.query(MemoryRecord).filter(MemoryRecord.id == memory_id).first()
+        if record:
             return {
-                "id": row[0],
-                "timestamp": row[1],
-                "book_id": row[2],
-                "name": row[3],
-                "condition": row[4],
-                "content": row[5],
-                "strength": row[6],
-                "context_tags": row[7].split(",") if row[7] else [],
-                "book_balance": row[8]
+                "id": record.id,
+                "timestamp": record.timestamp,
+                "book_id": record.book_id,
+                "name": record.name,
+                "condition": record.condition,
+                "content": record.content,
+                "strength": record.strength,
+                "book_balance": record.book_balance
             }
         return None
 
 def get_latest_book_balance(book_id):
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT book_balance FROM memory WHERE book_id = ? ORDER BY timestamp DESC LIMIT 1", (book_id,))
-        row = cursor.fetchone()
-        if row and row[0] is not None:
-            return row[0]
+    with SessionLocal() as db:
+        record = (
+            db.query(MemoryRecord)
+            .filter(MemoryRecord.book_id == book_id)
+            .order_by(MemoryRecord.timestamp.desc())
+            .first()
+        )
+        if record and record.book_balance is not None:
+            return record.book_balance
         return 0.0
