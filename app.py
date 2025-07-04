@@ -59,7 +59,9 @@ def add_patient():
         return "Missing book number or name", 400
 
     timestamp = time.time()
-    record_date = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+    record_date = datetime.fromtimestamp(timestamp)
+    # formatted_date = record_date.strftime('%Y-%m-%d %H:%M:%S')
+
 
     memory = {
         "id": str(uuid.uuid4()),
