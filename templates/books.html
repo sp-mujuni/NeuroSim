@@ -39,7 +39,6 @@
       {% for book in books %}
       <div class="book-card bg-white">
         <h5>{{ book.book_id }}</h5>
-        <p class="mb-1"><strong>Patient:</strong> {{ book.name }}</p>
         <p class="text-muted mb-0"><em>Latest Bill:</em> {{ book.book_balance_final }}</p>
       </div>
       {% endfor %}
