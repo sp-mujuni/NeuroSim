@@ -47,6 +47,29 @@ def books():
             unique_books[rec['book_id']] = rec
     return render_template("books.html", books=unique_books.values())
 
+@app.route("/bill/<book_id>", methods=["GET", "POST"])
+@login_required
+def edit_bill(book_id):
+    records = [m for m in memory_engine.get_memories() if m['book_id'] == book_id]
+    if not records:
+        return "Book not found", 404
+
+    latest = sorted(records, key=lambda x: x['timestamp'], reverse=True)[0]
+
+    if request.method == "POST":
+        new_fee = request.form.get("bill")
+
+        # Update only the book_balance field
+        try:
+            latest['book_balance'] = float(new_fee.replace(',', '')) if new_fee else 0.0
+        except ValueError:
+            latest['book_balance'] = 0.0
+
+        memory_engine.update_memory(latest)
+        return redirect(url_for("books"))
+
+    return render_template("edit_bill.html", book=latest)
+
 
 @app.route("/add", methods=["POST"])
 @login_required
@@ -85,7 +108,7 @@ def add_patient():
         "name": name,
         "condition": condition,
         "book_balance": book_balance_final,
-        "content": f"Notes: {notes}\nPrescription: {prescription}\nConsultation Fee: UGX {consultation_fee_value_formatted}\nDate Added: {formatted_date}\nLatest Book Bill: UGX {book_balance_final_formatted}",
+        "content": f"Notes: {notes}\nPrescription: {prescription}\nConsultation Fee: UGX {consultation_fee_value_formatted}\nDate Added: {formatted_date}",
     }
 
     memory_engine.save_memory(memory)
