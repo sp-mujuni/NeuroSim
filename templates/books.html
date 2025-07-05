@@ -1,0 +1,54 @@
+<!-- templates/books.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Namulundu- Books</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f5faff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .container {
+      padding-top: 60px;
+    }
+    h2 {
+      color: #1c3f60;
+      margin-bottom: 30px;
+    }
+    .book-card {
+      border-radius: 10px;
+      border-left: 5px solid #4682b4;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="text-center mb-4">
+      <h1 class="display-5 fw-bold text-success">Namulundu Hospital</h1>
+      <p class="lead fst-italic text-secondary">"Comprehensive Care for All"</p>
+      <hr class="my-3">
+      <h2 class="text-primary mb-2">Books</h2>
+    </div>
+    {% if books %}
+      {% for book in books %}
+      <div class="book-card bg-white">
+        <h5>{{ book.book_id }}</h5>
+        <p class="mb-1"><strong>Patient:</strong> {{ book.name }}</p>
+        <p class="text-muted mb-0"><em>Condition:</em> {{ book.condition }}</p>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="alert alert-warning">No books found in the system.</div>
+    {% endif %}
+    <div class="text-center mt-4">
+      <a href="/" class="btn btn-primary">← Back to Home</a>
+    </div>
+  </div>
+</body>
+</html>
