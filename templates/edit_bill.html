@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Bill - {{ book.book_id }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container mt-5">
+    <h2 class="text-primary mb-4">Edit Bill for Book: {{ book.book_id }}</h2>
+    <form method="POST" action="/bill/{{ book.book_id }}" class="card p-4 shadow-sm bg-white">
+      <div class="mb-3">
+        <label class="form-label">Patient Name</label>
+        <input type="text" value="{{ book.name }}" class="form-control" disabled placeholder="Patient Name" title="Patient Name">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Condition</label>
+        <input type="text" value="{{ book.condition }}" class="form-control" disabled placeholder="Condition" title="Condition">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Current Bill</label>
+        <input type="text" value="{{ book.book_balance }}" class="form-control" disabled placeholder="Current Bill Balance" title="Current Bill Balance">
+      </div>      
+      <div class="mb-3">
+        <label class="form-label">Update Bill</label>
+        <input type="text" name="bill" class="form-control" required placeholder="Enter New Bill Amount" title="New Bill Amount">
+      </div>
+      <div class="d-flex justify-content-between">
+        <a href="/books" class="btn btn-outline-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Update Bill</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
