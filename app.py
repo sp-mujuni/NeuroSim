@@ -1,5 +1,3 @@
-# app.py
-
 from flask import Flask, render_template, request, redirect, url_for, send_file, session
 from engine.memory_engine import MemoryEngine
 from engine.similarity import SimilarityScorer
