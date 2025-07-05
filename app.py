@@ -33,6 +33,23 @@ def login_required(view_func):
 def index():
     return render_template("index.html")
 
+@app.route("/patients")
+@login_required
+def patients():
+    return render_template("patients.html")
+
+@app.route("/books")
+@login_required
+def books():
+    all_records = memory_engine.get_memories()
+    # Filter by unique book_id with most recent entry (optional)
+    unique_books = {}
+    for rec in all_records:
+        if rec['book_id'] not in unique_books or rec['timestamp'] > unique_books[rec['book_id']]['timestamp']:
+            unique_books[rec['book_id']] = rec
+    return render_template("books.html", books=unique_books.values())
+
+
 @app.route("/add", methods=["POST"])
 @login_required
 def add_patient():
@@ -74,7 +91,7 @@ def add_patient():
     }
 
     memory_engine.save_memory(memory)
-    return redirect(url_for("index"))
+    return redirect(url_for("patients"))
 
 @app.route("/search", methods=["GET"])
 @login_required
