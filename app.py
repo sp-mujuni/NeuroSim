@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, send_file,
 from engine.memory_engine import MemoryEngine
 from engine.similarity import SimilarityScorer
 from engine.reinforcement import ReinforcementEngine
+from utils.csv_export import export_memories_to_csv
+from utils.pdf_export import export_memories_to_pdf
 from auth import auth_bp
 import uuid
 import time
@@ -39,12 +41,17 @@ def patients():
 @app.route("/books")
 @login_required
 def books():
+    query = request.args.get("query", "").strip().lower()
     all_records = memory_engine.get_memories()
-    # Filter by unique book_id with most recent entry (optional)
     unique_books = {}
+
     for rec in all_records:
-        if rec['book_id'] not in unique_books or rec['timestamp'] > unique_books[rec['book_id']]['timestamp']:
-            unique_books[rec['book_id']] = rec
+        key = rec['book_id'].lower()
+        if query and query not in key:
+            continue
+        if key not in unique_books or rec['timestamp'] > unique_books[key]['timestamp']:
+            unique_books[key] = rec
+
     return render_template("books.html", books=unique_books.values())
 
 @app.route("/bill/<book_id>", methods=["GET", "POST"])
@@ -76,11 +83,14 @@ def edit_bill(book_id):
 def add_patient():
     data = request.form
     book_id = data.get("book_id")
+    book_contact = data.get("book_contact")
     name = data.get("name")
     condition = data.get("condition")
     notes = data.get("notes")
     prescription = data.get("prescription")
     consultation_fee = data.get("consultation_fee")
+    doctor = data.get("doctor")
+    doctor_contact = data.get("doctor_contact")
     book_balance_final = 0.0
     try:
         consultation_fee_value = float(consultation_fee.replace(',', '')) if consultation_fee else 0.0
@@ -105,10 +115,11 @@ def add_patient():
         "id": str(uuid.uuid4()),
         "timestamp": record_date,
         "book_id": book_id,
+        "book_contact": book_contact,
         "name": name,
         "condition": condition,
         "book_balance": book_balance_final,
-        "content": f"Notes: {notes}\nPrescription: {prescription}\nConsultation Fee: UGX {consultation_fee_value_formatted}\nDate Added: {formatted_date}",
+        "content": f"Notes: {notes}\nPrescription: {prescription}\nConsultation Fee: UGX {consultation_fee_value_formatted}\nDoctor: {doctor}\nDoctor's Contact: {doctor_contact}\nDate Added: {formatted_date}",
     }
 
     memory_engine.save_memory(memory)
@@ -128,6 +139,20 @@ def search():
             memory_engine.update_memory(mem)
             results.append(mem)
     return render_template("search.html", results=results, query=query)
+
+@app.route("/export/all/csv")
+@login_required
+def export_all_csv():
+    memories = memory_engine.get_memories()
+    export_memories_to_csv(memories, "namulundu_all_records.csv")
+    return send_file("namulundu_all_records.csv", as_attachment=True)
+
+@app.route("/export/all/pdf")
+@login_required
+def export_all_pdf():
+    memories = memory_engine.get_memories()
+    export_memories_to_pdf(memories, "namulundu_all_records.pdf")
+    return send_file("namulundu_all_records.pdf", as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
