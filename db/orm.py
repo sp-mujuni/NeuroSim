@@ -52,9 +52,9 @@ def save_memory_entry(memory):
             condition=memory["condition"],
             content=memory["content"],
             book_balance=memory.get("book_balance", 0.0),
-            book_contact=memory.get("book_contact"),         # NEW FIELD
+            book_contact=memory["book_contact"],         # NEW FIELD
             doctor=memory.get("doctor"),                     # NEW FIELD
-            doctor_contact=memory.get("doctor_contact")      # NEW FIELD
+            doctor_contact=memory.get("doctor_contact")     # NEW FIELD
         )
         db.merge(record)
         db.commit()
@@ -88,7 +88,7 @@ def update_memory_entry(memory):
             record.condition = memory["condition"]
             record.content = memory["content"]
             record.book_balance = memory.get("book_balance", 0.0)
-            record.book_contact = memory.get("book_contact")         # NEW FIELD
+            record.book_contact = memory["book_contact"]         # NEW FIELD
             record.doctor = memory.get("doctor")                     # NEW FIELD
             record.doctor_contact = memory.get("doctor_contact")     # NEW FIELD
             db.commit()
