@@ -3,3 +3,4 @@ gunicorn
 scikit-learn
 sqlalchemy==1.4.47
 psycopg2
+reportlab
