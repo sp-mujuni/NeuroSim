@@ -17,8 +17,12 @@
     </div>
     <form action="/add" method="POST" class="card p-4 shadow-sm" validate>
       <div class="mb-3">
-        <label class="form-label">Book Information</label>
+        <label class="form-label">Book Number</label>
         <input type="text" name="book_id" class="form-control" required placeholder="Enter book number" title="Book Number">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Book Contact</label>
+        <input type="text" name="book_contact" class="form-control" placeholder="Enter book contact" title="Book Contact">
       </div>
       <div class="mb-3">
         <label class="form-label">Patient Name</label>
@@ -39,6 +43,14 @@
       <div class="mb-3">
         <label class="form-label">Consultation Fee</label>
         <input type="number" name="consultation_fee" class="form-control" required title="Consultation Fee" placeholder="Enter consultation fee">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Doctor</label>
+        <input type="text" name="doctor" class="form-control" required title="Doctor" placeholder="Doctor's name">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Doctor's Contact</label>
+        <input type="tel" name="doctor_contact" class="form-control" required title="Doctor's Contact" placeholder="Doctor's contact">
       </div>
       <div class="d-flex justify-content-between">
         <button type="submit" class="btn btn-primary" style="background-color: #2256a3; border-color: #2256a3;">Save</button>
