@@ -18,10 +18,10 @@ class MemoryRecord(Base):
     condition = Column(String)
     content = Column(Text)
     book_balance = Column(Float, default=0.0)
-    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-    book_contact = Column(Text)         # NEW FIELD
+    book_contact = Column(String)         # NEW FIELD
     doctor = Column(String)               # NEW FIELD
     doctor_contact = Column(String)       # NEW FIELD
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 # Create the database engine
 engine = create_engine(
