@@ -1,9 +1,9 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import (
     create_engine, Column, String, Text, Float, DateTime
 )
-from sqlalchemy.orm import declarative_base, sessionmaker, Session
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Use DATABASE_URL from environment for PostgreSQL fallback
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///namulundu.db")
@@ -18,7 +18,7 @@ class MemoryRecord(Base):
     condition = Column(String)
     content = Column(Text)
     book_balance = Column(Float, default=0.0)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     book_contact = Column(String)         # NEW FIELD
     doctor = Column(String)               # NEW FIELD
     doctor_contact = Column(String)       # NEW FIELD
