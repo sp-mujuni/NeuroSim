@@ -14,22 +14,22 @@
     <div class="container my-5">
         <!-- Header -->
         <div class="text-center mb-4">
-            <h1 class="display-5 fw-bold text-success">Namulundu Hospital</h1>
+            <h1 class="display-5 fw-bold" style="color: #2256a3;">Namulundu Hospital</h1>
             <p class="lead fst-italic text-secondary">"Comprehensive Care for All"</p>
             <hr class="my-3">
-            <h2 class="text-primary mb-2">Patient Information Search</h2>
+            <h2  style="color: #2256a3;">Patient Information Search</h2>
         </div>
 
         <!-- Search Form -->
         <form method="get" action="/search" class="mb-4">
             <div class="input-group">
-                <input type="text" name="query" class="form-control" placeholder="Search for patients, books and bills" value="{{ query|default('') }}" required>
-                <button class="btn btn-primary" type="submit">Search</button>
+                <input type="text" name="query" class="form-control" placeholder="Search for patients by name or book number" value="{{ query|default('') }}" required>
+                <button class="btn btn-primary" type="submit" style="background-color: #2256a3; border-color: #2256a3;">Search</button>
             </div>
         </form>
 
         <!-- Search Results Title -->
-        <h2 class="text-primary mb-4">
+        <h2  style="color: #2256a3;">
             {% if query %}Search Results for "{{ query }}"{% else %}Search Results{% endif %}
         </h2>
 
@@ -58,7 +58,7 @@
 
         <!-- Actions -->
         <div class="d-flex justify-content-between mt-4">
-            <a href="/patients" class="btn btn-outline-primary">Add Another Patient</a>
+            <a href="/patients" class="btn btn-primary" style="background-color: #2256a3; border-color: #2256a3;">Back to Form</a>
             <button onclick="window.print()" class="btn btn-secondary">Print Results</button>
         </div>
     </div>
