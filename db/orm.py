@@ -19,7 +19,7 @@ class MemoryRecord(Base):
     content = Column(Text)
     book_balance = Column(Float, default=0.0)
     timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-    book_contact = Column(String)         # NEW FIELD
+    book_contact = Column(Text)         # NEW FIELD
     doctor = Column(String)               # NEW FIELD
     doctor_contact = Column(String)       # NEW FIELD
 
