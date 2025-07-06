@@ -19,6 +19,9 @@ class MemoryRecord(Base):
     content = Column(Text)
     book_balance = Column(Float, default=0.0)
     timestamp = Column(DateTime, default=datetime.utcnow)
+    book_contact = Column(String)         # NEW FIELD
+    doctor = Column(String)               # NEW FIELD
+    doctor_contact = Column(String)       # NEW FIELD
 
 # Create the database engine
 engine = create_engine(
@@ -48,7 +51,10 @@ def save_memory_entry(memory):
             name=memory["name"],
             condition=memory["condition"],
             content=memory["content"],
-            book_balance=memory.get("book_balance", 0.0)
+            book_balance=memory.get("book_balance", 0.0),
+            book_contact=memory.get("book_contact"),         # NEW FIELD
+            doctor=memory.get("doctor"),                     # NEW FIELD
+            doctor_contact=memory.get("doctor_contact")      # NEW FIELD
         )
         db.merge(record)
         db.commit()
@@ -64,7 +70,10 @@ def load_all_memories():
                 "name": r.name,
                 "condition": r.condition,
                 "content": r.content,
-                "book_balance": r.book_balance
+                "book_balance": r.book_balance,
+                "book_contact": r.book_contact,         # NEW FIELD
+                "doctor": r.doctor,                     # NEW FIELD
+                "doctor_contact": r.doctor_contact      # NEW FIELD
             }
             for r in records
         ]
@@ -79,6 +88,9 @@ def update_memory_entry(memory):
             record.condition = memory["condition"]
             record.content = memory["content"]
             record.book_balance = memory.get("book_balance", 0.0)
+            record.book_contact = memory.get("book_contact")         # NEW FIELD
+            record.doctor = memory.get("doctor")                     # NEW FIELD
+            record.doctor_contact = memory.get("doctor_contact")     # NEW FIELD
             db.commit()
 
 def get_memory_by_id(memory_id):
@@ -92,7 +104,10 @@ def get_memory_by_id(memory_id):
                 "name": record.name,
                 "condition": record.condition,
                 "content": record.content,
-                "book_balance": record.book_balance
+                "book_balance": record.book_balance,
+                "book_contact": record.book_contact,         # NEW FIELD
+                "doctor": record.doctor,                     # NEW FIELD
+                "doctor_contact": record.doctor_contact      # NEW FIELD
             }
         return None
 
