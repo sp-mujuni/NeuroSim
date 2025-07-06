@@ -34,12 +34,33 @@
       <hr class="my-3">
       <h2 class="mb-2" style="color: #2256a3;">Books</h2>
     </div>
+
+    <form method="GET" action="/books" class="mb-4">
+      <div class="input-group">
+        <input type="text" name="query" class="form-control" placeholder="Search by Book Number" value="{{ request.args.get('query', '') }}">
+        <button type="submit" class="btn btn-primary" style="background-color: #2256a3; border-color: #2256a3;">Search</button>
+      </div>
+    </form>
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    {% if message %}
+      <div class="alert alert-success">{{ message }}</div>
+    {% endif %}
+
+    <div class="d-flex justify-content-end mb-3">
+      <a href="/export/all/csv" class="btn btn-outline-success me-2">Export All (CSV)</a>
+      <a href="/export/all/pdf" class="btn btn-outline-danger">Export All (PDF)</a>
+    </div>
+
     {% if books %}
       {% for book in books %}
       <div class="book-card bg-white">
         <h5>{{ book.book_id }}</h5>
-        <p class="text-muted mb-0"><em>Latest Bill:</em> {{ book.book_balance }}</p>
-        <a href="/bill/{{ book.book_id }}" class="btn btn-sm btn-primary" style="background-color: #2256a3; border-color: #2256a3;">Edit Bill</a>
+        <p class="text-muted mb-0"><em>Book Contact:</em> {{ book.book_contact }}</p>
+        <p class="text-muted mb-0"><em>Latest Bill:</em> UGX {{ book.book_balance }}</p>
+        <br>
+        <a href="/bill/{{ book.book_id }}" class="btn btn-sm btn-primary" style="background-color: #2256a3; border-color: #2256a3;">Update Bill</a>
       </div>
       {% endfor %}
     {% else %}
